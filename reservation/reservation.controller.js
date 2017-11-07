@@ -20,8 +20,9 @@ function getReservedDiamonds (diamondId, cb) {
       if (err) {
         cb(err);
         return;
+        
       }
-      cb(null, results);
+      cb(null, results); 
   });
 }
 
