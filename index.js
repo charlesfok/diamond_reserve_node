@@ -6,6 +6,7 @@ app.use(express.static(__dirname + '/public'))
 
 app.use('/api/diamonds', require('./diamond'));
 app.use('/api/users', require('./user'));
+app.use('/api/reservations', require('./reservation'));
 
 app.get('/', function(req, res) {
   res.send('Hello World!')

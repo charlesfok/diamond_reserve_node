@@ -9,50 +9,129 @@ const connection = require('../db-connect')
 
 exports.getDiamonds = (req, res, next) => {
 
-  var sql = 
-   `SELECT  A.shape, 
-            A.weight, 
-            A.color, 
-            A.clarity, 
-            A.measurements, 
-            A.diamond360, 
-            A.price, 
-            A.diamond_image, 
-            A.certificate_number,
-            A.comments,
-            A.culet_size,
-            A.cut_grade,
-            A.fluorescene_intensity,
-            A.girdle_thick,
-            A.girdle_thin,
-            A.lab,
-            A.polish,
-            A.symmetry,
-            A.vendo_number,
-            A.certificate_image,
-            A.depth            
 
-    FROM  diamonds A
-    WHERE 1`;
-
-  connection.query(sql, (err, results) => {
+  connection.query('SELECT is_admin FROM `users` WHERE `id` = ?', req.query.user_id, (err, result) => {
+    
       if (err) {
         next(err);
         return;
       }
-      res.json(results);
-    });
+      var is_admin = result[0].is_admin;
+      console.log(is_admin);
+
+      var sql;
+
+      if (is_admin) {
+
+         sql = `SELECT  A.vendo_number,
+                        A.shape, 
+                        A.weight, 
+                        A.color, 
+                        A.clarity, 
+                        A.measurements, 
+                        A.diamond360, 
+                        A.price, 
+                        A.diamond_image, 
+                        A.certificate_number,
+                        A.comments,
+                        A.culet_size,
+                        A.cut_grade,
+                        A.fluorescene_intensity,
+                        A.girdle_thick,
+                        A.girdle_thin,
+                        A.lab,
+                        A.polish,
+                        A.symmetry,
+                        A.certificate_image,
+                        A.depth,
+                        IFNULL(B.is_reserved, 0) as total_reserved,
+                        C.state as user_state,
+                        C.reserved_date as user_reserved_date,
+                        C.reject_reason as user_reject_reason            
+
+                 FROM  diamonds A
+                       LEFT JOIN
+                          (SELECT diamond_id,
+                                  COUNT(user_id) as is_reserved
+                           FROM reservations
+                           WHERE state = 'reserved'
+                           GROUP BY diamond_id) as B
+                           on A.vendo_number = B.diamond_id
+                       LEFT JOIN
+                          (SELECT diamond_id,
+                                  state,
+                                  reserved_date,
+                                  reject_reason
+                           FROM reservations
+                           WHERE user_id = ?) as C
+                           on A.vendo_number = C.diamond_id`;
 
 
-/*
-  searchCoins(req.query, req.userId, (err, results) => {
-      if (err) {
-        next(err);
-        return;
+          connection.query(sql, req.query.user_id, (err, results) => {
+              if (err) {
+                next(err);
+                return;
+              }
+              res.json(results);
+          });
+
+      } else {
+ 
+         sql = `SELECT  A.vendo_number,
+                        A.shape, 
+                        A.weight, 
+                        A.color, 
+                        A.clarity, 
+                        A.measurements, 
+                        A.diamond360, 
+                        A.price, 
+                        A.diamond_image, 
+                        A.certificate_number,
+                        A.comments,
+                        A.culet_size,
+                        A.cut_grade,
+                        A.fluorescene_intensity,
+                        A.girdle_thick,
+                        A.girdle_thin,
+                        A.lab,
+                        A.polish,
+                        A.symmetry,
+                        A.certificate_image,
+                        A.depth,
+                        IFNULL(B.is_reserved, 0) as total_reserved,
+                        C.state as user_state,
+                        C.reserved_date as user_reserved_date,
+                        C.reject_reason as user_reject_reason            
+
+                 FROM  diamonds A
+                       LEFT JOIN
+                          (SELECT diamond_id,
+                                  COUNT(user_id) as is_reserved
+                           FROM reservations
+                           WHERE state = 'reserved'
+                           GROUP BY diamond_id) as B
+                           on A.vendo_number = B.diamond_id
+                       LEFT JOIN
+                          (SELECT diamond_id,
+                                  state,
+                                  reserved_date,
+                                  reject_reason
+                           FROM reservations
+                           WHERE user_id = ?) as C
+                           on A.vendo_number = C.diamond_id
+                 WHERE (B.is_reserved IS NULL) OR (C.state IS NOT NULL)`;
+
+
+          connection.query(sql, req.query.user_id, (err, results) => {
+              if (err) {
+                next(err);
+                return;
+              }
+              res.json(results);
+          });
       }
-      res.json(results);
+
   });
-  */
 }
 
 
