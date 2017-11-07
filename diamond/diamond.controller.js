@@ -16,7 +16,7 @@ exports.getDiamonds = (req, res, next) => {
         next(err);
         return;
       }
-      if (!results.length) {
+      if (!result.length) {
         res.json({code: 404, message: 'Not found'});
         return;
       }
