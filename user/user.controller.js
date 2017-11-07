@@ -67,14 +67,13 @@ exports.createUser = (req, res, next) => {
 
 
 function read (id, cb) {
-  console.log(id);
   connection.query('SELECT * FROM `users` WHERE `id` = ?', id, (err, results) => {
       if (err) {
         cb(err);
         return;
       }
       if (!results.length) {
-        cb({
+        cb(null, {
           code: 404,
           message: 'Not found'
         });
@@ -92,12 +91,7 @@ function read (id, cb) {
  */
 exports.getUser = (req, res, next) => {
 
-  console.log('Body');
-  console.log(req.body);
-  console.log('Query');
-  console.log(req.query);
-
-  read(req.query.userId, (err, entity) => {
+  read(req.query.user_id, (err, entity) => {
     if (err) {
       next(err);
       return;
@@ -120,7 +114,7 @@ exports.updateUser = (req, res, next) => {
         next(err);
         return;
       }
-      read(req.userId, (err, entity) => {
+      read(req.user_id, (err, entity) => {
         if (err) {
           next(err);
           return;
@@ -138,7 +132,7 @@ exports.updateUser = (req, res, next) => {
  */
 exports.deleteUser = (req, res, next) => {
 
-  connection.query('DELETE FROM `users` WHERE `id` = ?', req.userId, (err) => {
+  connection.query('DELETE FROM `users` WHERE `id` = ?', req.query.user_id, (err) => {
     if (err) {
       next(err);
       return;
