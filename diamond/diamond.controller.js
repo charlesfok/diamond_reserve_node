@@ -16,6 +16,10 @@ exports.getDiamonds = (req, res, next) => {
         next(err);
         return;
       }
+      if (!results.length) {
+        res.json({code: 404, message: 'Not found'});
+        return;
+      }
       var is_admin = result[0].is_admin;
       console.log(is_admin);
 
