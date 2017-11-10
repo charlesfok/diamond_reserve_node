@@ -9,6 +9,119 @@ const connection = require('../db-connect')
 
 
 
+
+exports.getReserves = (req, res, next) => {
+
+  connection.query('SELECT is_admin FROM `users` WHERE `id` = ?', req.query.user_id, (err, result) => {
+    
+      if (err) {
+        next(err);
+        return;
+      }
+      if (!result.length) {
+        res.json({code: 404, message: 'Not found'});
+        return;
+      }
+      var is_admin = result[0].is_admin;
+      console.log('Admin:');
+      console.log(is_admin);
+
+      var sql;
+
+      if (is_admin) {
+
+         sql = `SELECT  A.vendo_number,
+                        A.shape, 
+                        A.weight, 
+                        A.color, 
+                        A.clarity, 
+                        A.measurements, 
+                        A.diamond360, 
+                        A.price, 
+                        A.diamond_image, 
+                        A.certificate_number,
+                        A.comments,
+                        A.culet_size,
+                        A.cut_grade,
+                        A.fluorescene_intensity,
+                        A.girdle_thick,
+                        A.girdle_thin,
+                        A.lab,
+                        A.polish,
+                        A.symmetry,
+                        A.certificate_image,
+                        A.depth,
+                        C.user_id as user,
+                        C.state as user_state,
+                        C.reserved_date as user_reserved_date,
+                        C.reject_reason as user_reject_reason            
+
+                 FROM  reservations C
+                       LEFT JOIN diamonds as A
+                           on A.vendo_number = C.diamond_id
+                 WHERE C.state = 'pending' OR C.state = 'reserved'
+                 ORDER BY C.state DESC`;
+
+
+          connection.query(sql, (err, results) => {
+              if (err) {
+                next(err);
+                return;
+              }
+              res.json(results);
+          });
+
+      } else {
+ 
+         sql = `SELECT  A.vendo_number,
+                        A.shape, 
+                        A.weight, 
+                        A.color, 
+                        A.clarity, 
+                        A.measurements, 
+                        A.diamond360, 
+                        A.price, 
+                        A.diamond_image, 
+                        A.certificate_number,
+                        A.comments,
+                        A.culet_size,
+                        A.cut_grade,
+                        A.fluorescene_intensity,
+                        A.girdle_thick,
+                        A.girdle_thin,
+                        A.lab,
+                        A.polish,
+                        A.symmetry,
+                        A.certificate_image,
+                        A.depth,
+                        C.user_id as user,
+                        C.state as user_state,
+                        C.reserved_date as user_reserved_date,
+                        C.reject_reason as user_reject_reason            
+
+                 FROM  reservations C
+                       LEFT JOIN diamonds as A
+                           on A.vendo_number = C.diamond_id
+                 WHERE C.user_id = ?
+                 ORDER BY C.state DESC`;
+
+
+          connection.query(sql, req.query.user_id, (err, results) => {
+              if (err) {
+                next(err);
+                return;
+              }
+              console.log("success get diamonds");
+              res.json(results);
+
+          });
+      }
+
+  });
+}
+
+
+
 function getReservedDiamonds (diamondId, cb) {
 
   var sql = 
@@ -20,7 +133,7 @@ function getReservedDiamonds (diamondId, cb) {
       if (err) {
         cb(err);
         return;
-        
+
       }
       cb(null, results); 
   });
@@ -30,8 +143,6 @@ function getReservedDiamonds (diamondId, cb) {
 
 exports.acceptReserve = (req, res, next) => {
 
-  req.body.state = "pending"
-
     getReservedDiamonds(req.body.diamond_id, (err, results) => {
       if (err) {
         next(err);
@@ -39,7 +150,8 @@ exports.acceptReserve = (req, res, next) => {
       }
 
       if (results.length > 0) {
-         res.json({"fail" : "This diamond is already reserved"});
+         res.json({"message" : "This diamond is already reserved",
+                   "result": "fail"});
       } 
       else 
       {
@@ -66,23 +178,27 @@ exports.acceptReserve = (req, res, next) => {
                 req.body.state = "reserved";
                 req.body.reject_reason = "";
 
-                if (result1.length > 0) {
+                if (result1.length > 0) { //Accept the user's reserve request: user_id should be users' in body
                   req.body.reserved_date =  new Date();
                   connection.query('UPDATE `reservations` SET ? WHERE `id` = ?', [req.body, result1[0].id], (err) => {
                       if (err) {
                         next(err);
                         return;
                       }
-                      res.json({"success" : "This diamond is on reserved"});
+                      console.log("Reserve request of user is accepted")
+                      res.json({"message" : "This diamond is on reserved",
+                                "result": "success"});
                   });
                 }
-                else {
+                else {  // Admin requires reservation : user_id should be admin's in body
                   connection.query('INSERT INTO `reservations` SET ?', req.body, (err, result) => {
                       if (err) {
                         next(err);
                         return;
                       }
-                    res.json({"success" : "This diamond is on reserved by admin"});
+                      console.log("Admin created reservation")
+                      res.json({"message" : "This diamond is on reserved by admin",
+                                "result": "success"});
                   });
                 }
             });
@@ -107,7 +223,8 @@ exports.requestReserve = (req, res, next) => {
       }
 
       if (results.length > 0) {
-         res.json({"fail" : "This diamond is already reserved"});
+         res.json({"message" : "This diamond is already reserved",
+                   "result": "fail"});
       } 
       else 
       {
@@ -128,7 +245,8 @@ exports.requestReserve = (req, res, next) => {
                     next(err);
                     return;
                   }
-                  res.json({"success" : "This diamond is on pending"});
+                  res.json({"message" : "This diamond is on pending",
+                            "result": "success"});
               });
             }
             else {
@@ -137,7 +255,8 @@ exports.requestReserve = (req, res, next) => {
                     next(err);
                     return;
                   }
-                res.json({"success" : "This diamond is on pending"});
+                  res.json({"message" : "This diamond is on pending",
+                            "result": "success"});              
               });
             }
         });
@@ -157,7 +276,8 @@ exports.rejectReserve = (req, res, next) => {
       next(err);
       return;
     }
-    res.json({"success" : "This diamond is on rejected"});
+    res.json({"message" : "Reservation is rejected",
+              "result": "success"});    
   });
 }
 
@@ -165,13 +285,15 @@ exports.rejectReserve = (req, res, next) => {
 
 exports.cancelReserve = (req, res, next) => {
 
+  console.log(req.body.diamond_id);
   connection.query('DELETE FROM `reservations` WHERE `diamond_id` = ?', req.body.diamond_id, (err) => {
     if (err) {
       next(err);
       return;
     }
-    res.json({"success":"The reservation is cancelled"});
-  });
+    res.json({"message" : "Reservation is cancelled",
+              "result": "success"});   
+    });
 
 }
 

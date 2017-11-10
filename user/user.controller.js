@@ -6,11 +6,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const connection = require('../db-connect')
 
-/**
- * GET /api/users
- *
- * Retrieve a page of users (up to ten at a time).
- */
+
 exports.getUsers = (req, res, next) => {
 
   connection.query(
@@ -25,23 +21,33 @@ exports.getUsers = (req, res, next) => {
   );
 }
 
+exports.getAdmins = (req, res, next) => {
 
-/**
- * POST /api/users
- *
- * Create a new user.
- */
+  connection.query(
+    'SELECT arn from `users` WHERE is_admin = true', // LIMIT ? OFFSET ?', [10, token],
+    (err, results) => {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.json(results);
+    }
+  );
+}
+
+
+
+
+
 exports.createUser = (req, res, next) => {
 
-
-
-  connection.query('INSERT INTO `users` SET ?', userData, (err, result) => {
+  connection.query('INSERT INTO `users` SET ?', req.body, (err, result) => {
     console.log(result);
     if (err) {
       if (err.code === 'ER_DUP_ENTRY') {
         // res.status(403).send('User already exits');
         // return;
-        read(userData.id, (err, entity) => {
+        read(req.body.id, (err, entity) => {
           if (err) {
             next(err);
             return;
@@ -53,7 +59,7 @@ exports.createUser = (req, res, next) => {
       }
     
     } else {
-        read(userData.id, (err, entity) => {
+        read(req.body.id, (err, entity) => {
           if (err) {
             next(err);
             return;
@@ -107,6 +113,9 @@ exports.getUser = (req, res, next) => {
  * Update a user.
  */
 exports.updateUser = (req, res, next) => {
+      console.log('aaaaa');
+
+      console.log(req.body);
 
   connection.query(
     'UPDATE `users` SET ? WHERE `id` = ?', [req.body, req.params.id], (err) => {
@@ -114,7 +123,8 @@ exports.updateUser = (req, res, next) => {
         next(err);
         return;
       }
-      read(req.user_id, (err, entity) => {
+      console.log('fefefewfewf');
+      read(req.params.id, (err, entity) => {
         if (err) {
           next(err);
           return;

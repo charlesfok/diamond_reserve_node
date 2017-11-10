@@ -17,6 +17,11 @@ function checkAuth(req, res, next) {
 	}
 }
 
+
+
+
+router.get('/', controller.getReserves);
+
 router.post('/request', controller.requestReserve);
 router.post('/accept', controller.acceptReserve);
 router.post('/reject', controller.rejectReserve);
