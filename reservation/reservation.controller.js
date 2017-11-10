@@ -121,6 +121,72 @@ exports.getReserves = (req, res, next) => {
 }
 
 
+exports.getReserve = (req, res, next) => {
+
+  connection.query('SELECT is_admin FROM `users` WHERE `id` = ?', req.query.user_id, (err, result) => {
+    
+      if (err) {
+        next(err);
+        return;
+      }
+      if (!result.length) {
+        res.json({code: 404, message: 'User Not found'});
+        return;
+      }
+      var is_admin = result[0].is_admin;
+      console.log('fffff:');
+      console.log(is_admin);
+
+      var sql = `SELECT  A.vendo_number,
+                        A.shape, 
+                        A.weight, 
+                        A.color, 
+                        A.clarity, 
+                        A.measurements, 
+                        A.diamond360, 
+                        A.price, 
+                        A.diamond_image, 
+                        A.certificate_number,
+                        A.comments,
+                        A.culet_size,
+                        A.cut_grade,
+                        A.fluorescene_intensity,
+                        A.girdle_thick,
+                        A.girdle_thin,
+                        A.lab,
+                        A.polish,
+                        A.symmetry,
+                        A.certificate_image,
+                        A.depth,
+                        C.user_id as user,
+                        C.state as user_state,
+                        C.reserved_date as user_reserved_date,
+                        C.reject_reason as user_reject_reason            
+
+                 FROM  reservations C
+                       LEFT JOIN diamonds as A
+                           on A.vendo_number = C.diamond_id
+                 WHERE C.user_id = ? AND C.diamond_id = ?
+                 ORDER BY C.state DESC`;
+
+
+          connection.query(sql, [req.query.user_id, req.query.diamond_id], (err, results) => {
+              if (err) {
+                next(err);
+                return;
+              }
+              if (!results.length) {
+                res.json({code: 404, message: 'Reservation Not found'});
+                return;
+              }
+              console.log("success get reserve");
+              res.json(results[0]);
+
+          });
+   });
+}
+
+
 
 function getReservedDiamonds (diamondId, cb) {
 
