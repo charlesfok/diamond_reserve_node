@@ -8,7 +8,7 @@ const options = {
   user: 'sql9204835',
   password: 'kg7xSZzhJ3',
   database: 'sql9204835',
-  host: 'sql3.freesqldatabase.com',
+  host: 'sql9.freesqldatabase.com',
   port: 3306
 };
 
