@@ -5,9 +5,9 @@ const config = require('./config');
 const mysql = require('mysql');
 
 const options = {
-  user: 'sql3203367',
-  password: 'pmXihvmHrA',
-  database: 'sql3203367',
+  user: 'sql9204835',
+  password: 'kg7xSZzhJ3',
+  database: 'sql9204835',
   host: 'sql3.freesqldatabase.com',
   port: 3306
 };
