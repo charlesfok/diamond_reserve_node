@@ -362,7 +362,6 @@ function readDiamond (diamondId, cb) {
 }
 
 
-
 /**
  * PUT /api/coins/:id
  *
