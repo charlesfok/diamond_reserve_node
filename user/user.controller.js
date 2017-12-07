@@ -35,6 +35,34 @@ exports.getAdmins = (req, res, next) => {
   );
 }
 
+exports.getHomeTitle = (req, res, next) => {
+
+  connection.query(
+    'SELECT home_title from `admin` WHERE 1', // LIMIT ? OFFSET ?', [10, token],
+    (err, results) => {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.json(results[0]);
+    }
+  );
+}
+
+exports.updateHomeTitle = (req, res, next) => {
+
+  console.log(req.body);
+
+  connection.query(
+    'UPDATE `admin` SET ? WHERE `id` = 1', req.body, (err) => {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.json('success');
+    });
+}
+
 
 
 

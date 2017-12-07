@@ -19,8 +19,10 @@ function checkAuth(req, res, next) {
 router.get('/', controller.getUsers);
 router.get('/login', controller.getUser);
 router.get('/admins', controller.getAdmins);
+router.get('/home_text', controller.getHomeTitle);
 router.post('/', controller.createUser);
 router.post('/:id', controller.updateUser);
+router.post('/home_text', controller.updateHomeTitle);
 router.delete('/:id', controller.deleteUser);
 
 
