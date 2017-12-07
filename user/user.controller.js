@@ -35,7 +35,7 @@ exports.getAdmins = (req, res, next) => {
   );
 }
 
-exports.getHomeTitle = (req, res, next) => {
+exports.getHomeText = (req, res, next) => {
 
   connection.query(
     'SELECT home_title from `admin` WHERE 1', // LIMIT ? OFFSET ?', [10, token],
@@ -49,7 +49,7 @@ exports.getHomeTitle = (req, res, next) => {
   );
 }
 
-exports.updateHomeTitle = (req, res, next) => {
+exports.updateHomeText = (req, res, next) => {
 
   console.log(req.body);
 
