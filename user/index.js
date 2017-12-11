@@ -22,7 +22,7 @@ router.get('/admins', controller.getAdmins);
 router.get('/home_text', controller.getHomeText);
 router.post('/', controller.createUser);
 router.post('/:id', controller.updateUser);
-router.post('/home_text', controller.updateHomeText);
+router.put('/home_text', controller.updateHomeText);
 router.delete('/:id', controller.deleteUser);
 
 
