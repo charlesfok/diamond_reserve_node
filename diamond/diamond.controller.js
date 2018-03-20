@@ -467,8 +467,6 @@ exports.pullDiamonds = (req, res, next) => {
           var sql = 'INSERT INTO `diamonds1` (' +  keys.join(',') + ') VALUES ?';
           var header = data.splice(0, 1);
 
-          console.log(sql);
-
           connection.query(sql, [data], (err1, result) => {
               if (err1) {
                 next(err1);
