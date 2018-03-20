@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const connection = require('../db-connect')
 const request = require('request');
 const csvParser = require('csv-parse');
-// const csv = require('csvtojson');
 
 exports.getDiamonds = (req, res, next) => {
 
@@ -403,17 +402,7 @@ exports.deleteDiamond = (req, res, next) => {
 exports.pullDiamonds = (req, res, next) => {
   console.log('pull');
 
-  // csv()
-  // .fromStream(request.get('https://s3.amazonaws.com/diamondreserve-userfiles-mobilehub-952888115/uploads'))
-  // .on('csv',(csvRow)=>{
-  //    res.json(csvRow);
-  // })
-  // .on('done',(error)=>{
-  //   console.log(error);
-  // })
-
-
-  
+ 
   request('https://s3.amazonaws.com/diamondreserve-userfiles-mobilehub-952888115/uploads', function (error, response, body) {
     if (error) {
       next(error);
@@ -431,8 +420,65 @@ exports.pullDiamonds = (req, res, next) => {
             next(err);
             return;
           }
-          console.log(data);
-          res.json(data);
+
+          let keys = ['shape', 
+                      'weight', 
+                      'color', 
+                      'clarity', 
+                      'measurements', 
+                      'cut_grade', 
+                      'lab',
+                      'price',
+                      'depth',
+                      'table_number',
+                      'girdle_thin',
+                      'girdle_thick',
+                      'girdle',
+                      'culet_size',
+                      'culet_condition',
+                      'polish',
+                      'symmetry',
+                      'fluorescene_intensity',
+                      'fluorescene_color',
+                      'crown_height',
+                      'crown_angle',
+                      'pavillion_depth',
+                      'pavillion_angle',
+                      'treatment',
+                      'laserinscription',
+                      'comments',
+                      'certificate_number',
+                      'certificate_image',
+                      'diamond360',
+                      'sarin_file',
+                      'vendo_number',
+                      'matched_stock_number',
+                      'is_matched_separable',
+                      'city',
+                      'state',
+                      'country',
+                      'fancy_color',
+                      'fancy_color_intensity',
+                      'fancy_color_overtone',
+                      'parcel_stone_count',
+                      'status',
+                      'trade_show',
+                      'diamond_image'];
+
+          var sql = 'INSERT INTO `diamonds1` (' +  keys.join(',') + ') VALUES ?';
+
+          console.log(sql);
+
+          connection.query(sql, [data], (err1, result) => {
+              if (err1) {
+                next(err1);
+                return;
+              }
+
+            res.json(data);
+
+          });
+
         });
 
       });
