@@ -465,16 +465,16 @@ exports.pullDiamonds = (req, res, next) => {
                       'diamond_image'];
 
           var sql = 'INSERT INTO `diamonds1` (' +  keys.join(',') + ') VALUES ?';
-          var mainData = data.splice(0, 1);
+          var header = data.splice(0, 1);
 
           console.log(sql);
 
-          connection.query(sql, [mainData], (err1, result) => {
+          connection.query(sql, [data], (err1, result) => {
               if (err1) {
                 next(err1);
                 return;
               }
-            res.json(mainData);
+            res.json(data);
           });
 
         });
