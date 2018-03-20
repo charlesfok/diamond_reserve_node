@@ -9,12 +9,13 @@
   "dependencies": {
     "body-parser": "~1.17.1",
     "csv-parse": "^2.0.4",
+    "csvtojson": "^1.1.9",
     "express": "^4.13.3",
     "mysql": "~2.13.0",
     "request": "^2.85.0"
   },
   "engines": {
-    "node": "4.0.0"
+    "node": "7.10.0"
   },
   "repository": {
     "type": "git"
