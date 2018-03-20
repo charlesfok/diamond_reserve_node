@@ -1,5 +1,6 @@
 var express = require('express')
 var app = express()
+var job = require('./cron')
 
 app.set('port', (process.env.PORT || 5000))
 app.use(express.static(__dirname + '/public'))
@@ -17,6 +18,8 @@ app.use((req, res) => {
   res.status(404).send('Not Found');
 });
 
+// Cron job
+job.job.start();
 
 // Basic error handler
 app.use((err, req, res, next) => {
