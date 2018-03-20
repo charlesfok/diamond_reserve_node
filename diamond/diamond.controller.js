@@ -421,7 +421,7 @@ exports.pullDiamonds = (req, res, next) => {
             return;
           }
 
-          let keys = ['shape', 
+          var keys = ['shape', 
                       'weight', 
                       'color', 
                       'clarity', 
@@ -474,9 +474,7 @@ exports.pullDiamonds = (req, res, next) => {
                 next(err1);
                 return;
               }
-
             res.json(data);
-
           });
 
         });
