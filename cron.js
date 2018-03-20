@@ -33,7 +33,7 @@ function updateCSV() {
         console.log(err);
         return;
       } 
-        connection.query('DELETE FROM `diamonds1` WHERE 1', (err) => {
+        connection.query('DELETE FROM `diamonds` WHERE 1', (err) => {
           if (err) {
             console.log(err);
             return;
@@ -83,7 +83,7 @@ function updateCSV() {
                       'trade_show',
                       'diamond_image'];
 
-          var sql = 'INSERT INTO `diamonds1` (' +  keys.join(',') + ') VALUES ?';
+          var sql = 'INSERT INTO `diamonds` (' +  keys.join(',') + ') VALUES ?';
           var header = data.splice(0, 1);
 
           connection.query(sql, [data], (err1, result) => {
