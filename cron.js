@@ -6,7 +6,7 @@ const connection = require('./db-connect')
 const request = require('request');
 const csvParser = require('csv-parse');
 
-var job = new CronJob('00 * * * * *', function() {
+var job = new CronJob('00 00 00 * * *', function() {
      console.log('job started');
      console.log(new Date());
      updateCSV();
