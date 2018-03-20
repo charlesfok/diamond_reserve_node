@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const connection = require('../db-connect')
 const request = require('request');
-const csvParser = require('csv-parse');
+// const csvParser = require('csv-parse');
 
 exports.getDiamonds = (req, res, next) => {
 
