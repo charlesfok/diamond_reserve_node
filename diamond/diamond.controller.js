@@ -402,7 +402,6 @@ exports.deleteDiamond = (req, res, next) => {
 exports.pullDiamonds = (req, res, next) => {
   console.log('pull');
 
- 
   request('https://s3.amazonaws.com/diamondreserve-userfiles-mobilehub-952888115/uploads', function (error, response, body) {
     if (error) {
       next(error);
@@ -439,7 +438,7 @@ exports.pullDiamonds = (req, res, next) => {
                       'polish',
                       'symmetry',
                       'fluorescene_intensity',
-                      'fluorescene_color',
+                      'fluorescence_color',
                       'crown_height',
                       'crown_angle',
                       'pavillion_depth',
