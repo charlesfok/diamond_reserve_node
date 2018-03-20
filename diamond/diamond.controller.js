@@ -3,7 +3,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const connection = require('../db-connect')
-
+const request = require('request');
+const csvParser = require('csv-parse');
 
 exports.getDiamonds = (req, res, next) => {
 
@@ -398,7 +399,34 @@ exports.deleteDiamond = (req, res, next) => {
 }
 
 
+exports.pullDiamonds = (req, res, next) => {
+  console.log('pull');
+  
+  request('https://s3.amazonaws.com/diamondreserve-userfiles-mobilehub-952888115/uploads', function (error, response, body) {
+    if (error) {
+      next(error);
+      return;
+    }
+    csvParser(body, {
+      delimiter: ','
+    }, function(err, data) {
+      if (err) {
+        console.log(err);
+        next(err);
+      } 
+        connection.query('DELETE FROM `diamonds1` WHERE 1', (err) => {
+          if (err) {
+            next(err);
+            return;
+          }
+          console.log(data);
+          res.json(data);
+        });
 
+      });
+  });
+
+}
 
 
 

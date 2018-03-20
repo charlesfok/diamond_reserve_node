@@ -26,6 +26,7 @@ router.post('/', controller.createDiamond);
 router.get('/:id', controller.getDiamond);
 router.put('/:id', controller.updateDiamond);
 router.delete('/:id', controller.deleteDiamond);
+router.post('/all', controller.pullDiamonds);
 
 /**
  * Errors on "/api/coins/*" routes.

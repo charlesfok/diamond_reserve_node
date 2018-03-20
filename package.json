@@ -7,9 +7,11 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "mysql": "~2.13.0",
+    "body-parser": "~1.17.1",
+    "csv-parse": "^2.0.4",
     "express": "^4.13.3",
-    "body-parser": "~1.17.1"
+    "mysql": "~2.13.0",
+    "request": "^2.85.0"
   },
   "engines": {
     "node": "4.0.0"
