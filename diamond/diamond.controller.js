@@ -399,6 +399,7 @@ exports.deleteDiamond = (req, res, next) => {
 }
 
 
+
 exports.pullDiamonds = (req, res, next) => {
   console.log('pull');
 
